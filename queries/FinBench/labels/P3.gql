@@ -1,0 +1,35 @@
+-- N=1 (transfer; Exp-1 Q1 anchor)
+MATCH p = (acc:Account WHERE acc.accountId in {input_ids})-[e1:transfer]->{1,3} (other:Account),
+          (other)<-[e2:signIn where e2.timestamp > ${startTime} and e2.timestamp < ${endTime}]-(medium:Medium)
+WITH SW(2) ON p AS pp
+  [ WHERE relationships(pp)[0].timestamp < relationships(pp)[1].timestamp ]
+WHERE relationships(p)[0].timestamp > ${startTime}
+  AND relationships(p)[-1].timestamp < ${endTime}
+  AND medium.isBlocked = True
+RETURN distinct other.id as otherId, length(p) as accountDistance,
+                medium.id as mediumId, medium.type as mediumType
+ORDER BY accountDistance, otherId, mediumId;
+
+-- N=2 (subtransfer1|subtransfer2)
+MATCH p = (acc:Account WHERE acc.accountId in {input_ids})-[e1:subtransfer1|subtransfer2]->{1,3} (other:Account),
+          (other)<-[e2:signIn where e2.timestamp > ${startTime} and e2.timestamp < ${endTime}]-(medium:Medium)
+WITH SW(2) ON p AS pp
+  [ WHERE relationships(pp)[0].timestamp < relationships(pp)[1].timestamp ]
+WHERE relationships(p)[0].timestamp > ${startTime}
+  AND relationships(p)[-1].timestamp < ${endTime}
+  AND medium.isBlocked = True
+RETURN distinct other.id as otherId, length(p) as accountDistance,
+                medium.id as mediumId, medium.type as mediumType
+ORDER BY accountDistance, otherId, mediumId;
+
+-- N=3 (subtransfer1|subtransfer2|subtransfer3)
+MATCH p = (acc:Account WHERE acc.accountId in {input_ids})-[e1:subtransfer1|subtransfer2|subtransfer3]->{1,3} (other:Account),
+          (other)<-[e2:signIn where e2.timestamp > ${startTime} and e2.timestamp < ${endTime}]-(medium:Medium)
+WITH SW(2) ON p AS pp
+  [ WHERE relationships(pp)[0].timestamp < relationships(pp)[1].timestamp ]
+WHERE relationships(p)[0].timestamp > ${startTime}
+  AND relationships(p)[-1].timestamp < ${endTime}
+  AND medium.isBlocked = True
+RETURN distinct other.id as otherId, length(p) as accountDistance,
+                medium.id as mediumId, medium.type as mediumType
+ORDER BY accountDistance, otherId, mediumId;

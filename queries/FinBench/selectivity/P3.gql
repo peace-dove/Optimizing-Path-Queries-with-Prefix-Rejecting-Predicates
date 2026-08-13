@@ -1,0 +1,7 @@
+MATCH p = (acc:Account WHERE acc.accountId IN {input_ids})
+             -[e1:transfer]->{1,3} (other:Account)
+WITH SW(*) ON p AS pp
+WHERE sum(pp, relationships(pp).amount) < ${theta}
+RETURN distinct other.id AS otherId,
+                length(p) AS accountDistance
+ORDER BY accountDistance, otherId;

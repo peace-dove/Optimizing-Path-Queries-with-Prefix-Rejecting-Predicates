@@ -7,7 +7,7 @@ This repository contains implementations and experimental evaluation for **"P^3:
 ```
 ├── datasets/       # Benchmark datasets (FinBench, SO, WDBench, Pokec)
 ├── queries/        # Query templates and parameters
-├── evaluation/     # Experimental results (Exp-1 ~ Exp-7)
+├── evaluation/     # Experimental results
 └── systems/        # Graph database systems (GU, Kuzu, Neo4j, P3, PathFinder, TuGraphDB)
 ```
 
@@ -58,7 +58,7 @@ See [queries/README.md](queries/README.md) for structure.
 
 ### 4. Results
 
-Experimental results are organized as seven reports in `evaluation/`:
+Experimental results are organized as reports in `evaluation/`:
 
 - **Exp-1** — Performance Improvement
 - **Exp-2** — Pruning Effect
@@ -67,6 +67,7 @@ Experimental results are organized as seven reports in `evaluation/`:
 - **Exp-5** — Planning Latency
 - **Exp-6** — Scalability
 - **Exp-7** — Case Study
+- **Exp-8** — Sensitivity: [selectivity](evaluation/exp-selectivity.md) / [density](evaluation/exp-density.md) / [label count](evaluation/exp-labels.md) (added in the author-response phase)
 
 See [evaluation/README.md](evaluation/README.md) for an overview of each experiment.
 
