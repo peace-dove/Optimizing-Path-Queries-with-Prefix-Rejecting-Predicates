@@ -23,6 +23,8 @@ docker load -i p3.tar
 
 Please download from [tp_instance_test](https://drive.google.com/file/d/1xzWA9BxWA-PspvkjRSULICTI6Cq5h1zT/view?usp=drive_link).
 
+**Rebuttal version** (adds the [compile-time diagnostic](#compile-time-diagnostic-sw-aggregates) below): [tp_instance_test (rebuttal)](https://drive.google.com/file/d/1mkjwi0pjgBOrEy755i6Eoq28kpGDcyOf/view?usp=sharing).
+
 ## Data Import
 
 ### FinBench Scale Factors
@@ -190,6 +192,22 @@ The `run.sh` script contains all benchmark commands. Uncomment the desired test 
 
 ```bash
 bash run.sh
+```
+
+## Compile-time Diagnostic (SW aggregates)
+
+P3 emits a compile-time **warning** when a GQL/SW aggregate bound may not be equivalent to its full-path post-filter counterpart. The diagnostic never rejects a query: the query is always well-defined and executed as written (per-window semantics); the warning only flags that full-path equivalence is unproven. Requires the **rebuttal version** binary above. Warned cases:
+
+- **SW(k≥2) + sum**: a sliding k-edge sum, not the prefix sum.
+- **SW(\*) + sum_lt** with a possibly-negative attribute: prefix-monotonic PRP equivalence needs a non-negative aggregate (schema sign read with a conservative default + a NONNEG override).
+- **max + `>`/`>=`** or **min + `<`/`<=`**: bound direction is wrong for the aggregate's running monotonicity (max non-decreasing, min non-increasing).
+
+### Demo
+
+[`queries/FinBench/selectivity/P3-sw2-demo.gql`](../../queries/FinBench/selectivity/P3-sw2-demo.gql) is the selectivity template with `SW(*)` replaced by `SW(2)` -- a sliding 2-edge sum where a prefix sum is likely intended (the first case above). Compiling it emits:
+
+```
+[Warning] SW(k)+sum is a k window sum, not the prefix sum. Use SW(*) if a prefix sum was intended. (P3-sw2-demo.gql:5)
 ```
 
 ## Notes
